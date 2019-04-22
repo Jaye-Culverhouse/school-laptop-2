@@ -1,7 +1,6 @@
 import numpy as np
 import cv2
 from pyzbar.pyzbar import decode as decodeQR
-import libs.QR
 
 def decode(im) : 
 	#QR codes
@@ -12,7 +11,8 @@ def decode(im) :
 
 	# Print results
 	for code in codes:
-		QRs.append(libs.QR.QR(code.data.decode("utf-8"), code.polygon))
+
+		QRs.append(code.data.decode("utf-8"))
 
 	return QRs
 
@@ -26,12 +26,7 @@ def readUntilQRFound():
 		ret, frame = cap.read()
 
 		currentQRs = decode(frame)
-		
-		for qr in currentQRs:
-			cv2.putText(frame, qr.data, (qr.points[3].x,qr.points[3].y-10), cv2. FONT_HERSHEY_PLAIN, 1, (255,0,0))
-			for point in qr.points:
-				cv2.circle(frame, (point.x,point.y), 5, (255,0,0))
-		
+				
 		cv2.imshow("window",frame)
 		cv2.waitKey(1)
 		
