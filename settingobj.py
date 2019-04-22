@@ -4,9 +4,9 @@ class obj():
 
 	def __init__(self, fn):
 
-		with open(fn, 'r') as f:
+		with open(fn) as f:
 
-			self.settings = json.loads(f.read())
+			self.settings = json.load(f)
 
 
 	def get(self, setting):
