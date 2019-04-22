@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 from pyzbar.pyzbar import decode as decodeQR
+import json
 
 def decode(im) : 
 	#QR codes
@@ -12,7 +13,7 @@ def decode(im) :
 	# Print results
 	for code in codes:
 
-		QRs.append(code.data.decode("utf-8"))
+		QRs.append(json.loads(code.data.decode("utf-8")))
 
 	return QRs
 
