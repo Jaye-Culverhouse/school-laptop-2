@@ -17,20 +17,30 @@ def main():
 			charset = "utf8mb4",
 			cursorclass=pymysql.cursors.DictCursor)
 
-		# try:
+		try:
 
-		with conn.cursor() as c:
+			with conn.cursor() as c:
 
-			sql = "SELECT CheckedIn FROM Device WHERE uid=%s"
-			c.execute(sql, (QRData["uid"]))
+				sql = "SELECT CheckedIn FROM Device WHERE uid=%s"
+				c.execute(sql, (QRData["uid"]))
 
-			result = c.fetchone()
+				result = c.fetchone()
 
-			print(result)
+				print(result)
 
-		# finally:
+		except:
+
+			pass;
+
+		finally:
 			c.close()
 
+			handleDevice(QRData["uid"], result["CheckedIn"])
+
+
+
+def handleDevice(uid, checked):
+	
 
 if __name__ == '__main__':
 	main()
