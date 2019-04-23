@@ -12,8 +12,17 @@ def main():
 	while True:
 		client_opencv.showScreenWithText(["Welcome.","Please follow the onscreen","instructions to check out a laptop"]) # show a welcome screen
 		
-		QRData = client_opencv.readUntilQRFound(text="Please present device ID")[0]
+		try:
+
+			QRData = client_opencv.readUntilQRFound(text="Please present device ID")[0]
+		
+		except:
+		
+			client_opencv.showScreenWithText(["This QR code doesn't seem to be setup", "Please tell someone"]) # show a welcome screen	
+			continue
+
 		print(QRData)
+		
 		if QRData["uid"] == "SPECIAL":
 
 			if (QRData["type"] == "MANAGE") & (QRData["auth"] == setting_obj.get("mangement_password")):
@@ -48,10 +57,10 @@ def main():
 
 					print("Result from checked query: ",result)
 
-			except:
+			except Exception as e:
 
-				pass;
-
+				client_opencv.showScreenWithText(["Something went wrong, please press the screen and take a photo of the next page to show someone"]) # show a welcome screen
+				client_opencv.showScreenWithText([e])
 			finally:
 				c.close()
 
@@ -61,8 +70,14 @@ def main():
 
 def handleDevice(deviceID, checked):
 
-	studentID = client_opencv.readUntilQRFound(text="Please present student ID")[0]["uid"]
+	try:
+
+		studentID = client_opencv.readUntilQRFound(text="Please present student ID")[0]["uid"]
 	
+	except:
+		client_opencv.showScreenWithText(["This QR code doesn't seem to be setup", "Please tell someone"]) # show a welcome screen	
+		return 0
+
 	eventType = -1
 
 	print("Result from student QR: ", studentID)
@@ -101,7 +116,8 @@ def handleDevice(deviceID, checked):
 
 		except:
 
-			pass; #do some error handling here?
+			client_opencv.showScreenWithText(["Something went wrong, please press the screen and take a photo of the next page to show someone"]) # show a welcome screen
+			client_opencv.showScreenWithText([e])
 
 		finally:
 			c.close()
@@ -128,7 +144,8 @@ def handleDevice(deviceID, checked):
 
 		except:
 
-			pass; #do some error handling here?
+				client_opencv.showScreenWithText(["Something went wrong, please press the screen and take a photo of the next page to show someone"]) # show a welcome screen
+				client_opencv.showScreenWithText([e])
 
 		finally:
 			c.close()
@@ -159,8 +176,9 @@ def handleDevice(deviceID, checked):
 
 		except:
 
-			pass; #do some error handling here?
-
+				client_opencv.showScreenWithText(["Something went wrong, please press the screen and take a photo of the next page to show someone"]) # show a welcome screen
+				client_opencv.showScreenWithText([e])
+				
 		finally:
 			c.close()
 
