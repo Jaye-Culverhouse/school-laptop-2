@@ -10,7 +10,7 @@ def main():
 
 
 	while True:
-		client_opencv.showScreenWithText(["Welcome.","Please follow the onscreen","instructions to check out a laptop"]) # show a welcome screen
+		client_opencv.showScreenWithText(["Welcome.","Please follow the onscreen","instructions to check out a laptop", "Press on the screen to advance"]) # show a welcome screen
 		
 		try:
 
@@ -173,12 +173,16 @@ def handleDevice(deviceID, checked):
 				c.execute(sql, (deviceID, studentID, eventType, int(time.time()), SName))
 				conn.commit()
 				print("INSERTED EVENT")
+				if eventType == 0:
+					client_opencv.showScreenWithText(["You've successfuly checked out the device"]) # show a welcome screen
+				else:
+					client_opencv.showScreenWithText(["You've successfuly checked in the device"]) # show a welcome screen
 
-		except:
+		except Exception as e:
 
 				client_opencv.showScreenWithText(["Something went wrong, please press the screen and take a photo of the next page to show someone"]) # show a welcome screen
 				client_opencv.showScreenWithText([e])
-				
+
 		finally:
 			c.close()
 
