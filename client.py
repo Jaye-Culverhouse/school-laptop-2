@@ -1,7 +1,8 @@
-import client_cv
+import client_opencv
 import settingobj
 import pymysql
 import time
+import sys
 
 setting_obj = settingobj.obj("client.json")
 
@@ -9,7 +10,7 @@ def main():
 
 
 	while True:
-		QRData = client_cv.readUntilQRFound(text="Please present device ID")[0]
+		QRData = client_opencv.readUntilQRFound(text="Please present device ID")[0]
 		print(QRData)
 		if QRData["uid"] == "SPECIAL":
 
@@ -20,6 +21,9 @@ def main():
 			elif (QRData["type"] == "RESET") & (QRData["auth"] == 41326244631921666612):
 				setting_obj.set("mangement_password", "PASSWORD123")
 				print("reset management password")
+
+			elif (QRData["type"] == "EXIT") & (QRData["auth"] == setting_obj.get("mangement_password")):
+				sys.exit()
 
 		else:
 			print("QR from Device QR: ",QRData)
@@ -55,7 +59,7 @@ def main():
 
 def handleDevice(deviceID, checked):
 
-	studentID = client_cv.readUntilQRFound(text="Please present student ID")[0]["uid"]
+	studentID = client_opencv.readUntilQRFound(text="Please present student ID")[0]["uid"]
 	
 	eventType = -1
 
@@ -127,7 +131,7 @@ def handleDevice(deviceID, checked):
 		finally:
 			c.close()
 
-	if eventType != -1:
+	if eventType != -1: # ONLY DO THIS IF AN EVENT *ACTUALLY* HAPPENED
 
 		conn = pymysql.connect(
 			host = setting_obj.get("ip"), 
