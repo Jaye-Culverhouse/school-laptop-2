@@ -10,6 +10,8 @@ def main():
 
 
 	while True:
+		client_opencv.showScreenWithText(["Welcome.","Please follow the onscreen","instructions to check out a laptop"]) # show a welcome screen
+		
 		QRData = client_opencv.readUntilQRFound(text="Please present device ID")[0]
 		print(QRData)
 		if QRData["uid"] == "SPECIAL":
@@ -145,8 +147,13 @@ def handleDevice(deviceID, checked):
 
 			with conn.cursor() as c:
 				
-				sql = "INSERT INTO Events (UID, DID, Time, CheckIn) VALUES (%s, %s, %s, %s)"
-				c.execute(sql, (deviceID, studentID, int(time.time()), eventType))
+				sql = "SELECT Name FROM Students WHERE uid=%s"
+				c.execute(sql, (studentID))
+
+				SName = c.fetchone()["Name"]
+
+				sql = "INSERT INTO Events (UID, DID, CheckedIn, Time, Name) VALUES (%s, %s, %s, %s, %s)"
+				c.execute(sql, (deviceID, studentID, eventType, int(time.time()), SName))
 				conn.commit()
 				print("INSERTED EVENT")
 
