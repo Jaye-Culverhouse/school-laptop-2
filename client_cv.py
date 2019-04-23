@@ -10,7 +10,7 @@ def decode(im) :
 
 	QRs = []
 
-	# Print results
+	# Decode response and resolve json
 	for code in codes:
 
 		QRs.append(json.loads(code.data.decode("utf-8")))
@@ -18,7 +18,7 @@ def decode(im) :
 	return QRs
 
 
-def readUntilQRFound():
+def readUntilQRFound(text=""):
 	cap = cv2.VideoCapture(0)
 	cv2.namedWindow("window", cv2.WND_PROP_FULLSCREEN)
 	cv2.setWindowProperty("window",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
@@ -27,7 +27,9 @@ def readUntilQRFound():
 		ret, frame = cap.read()
 
 		currentQRs = decode(frame)
-				
+		
+		cv2.putText(frame, text, (50,100), cv2. FONT_HERSHEY_PLAIN, 1, (255,0,0))
+
 		cv2.imshow("window",frame)
 		cv2.waitKey(1)
 		
