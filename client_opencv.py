@@ -41,3 +41,37 @@ def readUntilQRFound(text=""):
 	cv2.destroyAllWindows()
 
 	return currentQRs
+
+shouldBreak = False
+
+def breakLoop(event, x, y, flags, param):
+	if event == cv2.EVENT_LBUTTONDOWN:
+		global shouldBreak
+		shouldBreak = True
+
+def showScreenWithText(text):
+	cv2.namedWindow("window", cv2.WND_PROP_FULLSCREEN)
+	cv2.setWindowProperty("window",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
+	frame = np.zeros((1080,1920,3), np.uint8)
+
+	for t,i in zip(text, range(len(text))):
+
+		textsize = cv2.getTextSize(t, cv2.FONT_HERSHEY_PLAIN, 5, 2)[0]
+		textX = (frame.shape[1] - textsize[0]) // 2
+		
+		cv2.putText(frame, t, (textX,100+100*(i+1)), cv2.FONT_HERSHEY_PLAIN, 5, (255,255,255))
+
+	cv2.setMouseCallback("window", breakLoop)
+	global shouldBreak
+	shouldBreak = False
+
+	while True:
+
+		if shouldBreak:
+			break;
+
+		cv2.imshow("window",frame)
+		cv2.waitKey(1)
+
+	# When everything done, release the capture
+	cv2.destroyAllWindows()
