@@ -1,6 +1,1 @@
-{
-	"ip":"localhost",
-	"username":"dbuser",
-	"password":"owo6969OWO",
-	"db":"device_io_track"
-}
+{"ip": "localhost", "username": "dbuser", "password": "owo6969OWO", "db": "device_io_track", "mangement_password": "PASSWORD123"}
