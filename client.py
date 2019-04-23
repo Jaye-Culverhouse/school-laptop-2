@@ -9,34 +9,46 @@ def main():
 
 	while True:
 		QRData = client_cv.readUntilQRFound()[0]
-		print("QR from Device QR: ",QRData)
-		conn = pymysql.connect(
-			host = setting_obj.get("ip"), 
-			user = setting_obj.get("username"), 
-			password = setting_obj.get("password"),
-			db = setting_obj.get("db"),
-			charset = "utf8mb4",
-			cursorclass=pymysql.cursors.DictCursor)
+		print(QRData)
+		if QRData["uid"] == "SPECIAL":
 
-		try:
+			if (QRData["type"] == "MANAGE") & (QRData["auth"] == setting_obj.get("mangement_password")):
 
-			with conn.cursor() as c:
+				handleManagement()
 
-				sql = "SELECT CheckedIn FROM Device WHERE uid=%s"
-				c.execute(sql, (QRData["uid"]))
+			elif (QRData["type"] == "RESET") & (QRData["auth"] == 41326244631921666612):
+				setting_obj.set("mangement_password", "PASSWORD123")
+				print("reset management password")
 
-				result = c.fetchone()
+		else:
+			print("QR from Device QR: ",QRData)
+			conn = pymysql.connect(
+				host = setting_obj.get("ip"), 
+				user = setting_obj.get("username"), 
+				password = setting_obj.get("password"),
+				db = setting_obj.get("db"),
+				charset = "utf8mb4",
+				cursorclass=pymysql.cursors.DictCursor)
 
-				print("Result from checked query: ",result)
+			try:
 
-		except:
+				with conn.cursor() as c:
 
-			pass;
+					sql = "SELECT CheckedIn FROM Device WHERE uid=%s"
+					c.execute(sql, (QRData["uid"]))
 
-		finally:
-			c.close()
+					result = c.fetchone()
 
-			handleDevice(QRData["uid"], result["CheckedIn"])
+					print("Result from checked query: ",result)
+
+			except:
+
+				pass;
+
+			finally:
+				c.close()
+
+				handleDevice(QRData["uid"], result["CheckedIn"])
 
 
 
@@ -75,7 +87,7 @@ def handleDevice(deviceID, checked):
 					sql = "UPDATE Device SET CheckedIn=0 WHERE UID=%s"
 					c.execute(sql, (deviceID))
 					conn.commit()
-					print("UPDATED")
+					print("CHECKED OUT")
 
 		except:
 
@@ -93,19 +105,15 @@ def handleDevice(deviceID, checked):
 			db = setting_obj.get("db"),
 			charset = "utf8mb4",
 			cursorclass=pymysql.cursors.DictCursor)
+
 		try:
 
 			with conn.cursor() as c:
 				
-				if result["Banned"] == 1:
-					#banned handling
-					print("BANNED")
-					pass
-				else:
-					sql = "UPDATE Device SET CheckedIn=1 WHERE UID=%s"
-					c.execute(sql, (deviceID))
-					conn.commit()
-					print("UPDATED")
+				sql = "UPDATE Device SET CheckedIn=1 WHERE UID=%s"
+				c.execute(sql, (deviceID))
+				conn.commit()
+				print("CHECKED IN")
 
 		except:
 
@@ -113,6 +121,10 @@ def handleDevice(deviceID, checked):
 
 		finally:
 			c.close()
+
+def handleManagement():
+
+	print("management area accessed")
 
 if __name__ == '__main__':
 	main()
