@@ -72,7 +72,7 @@ def handleDevice(deviceID, checked):
 
 	try:
 
-		studentID = client_opencv.readUntilQRFound(text="Please present student ID")[0]["uid"]
+		studentID = client_opencv.readUntilQRFound(text="Please present student ID")[0]["sid"]
 	
 	except:
 		client_opencv.showScreenWithText(["This QR code doesn't seem to be setup", "Please tell someone"]) # show a welcome screen	
