@@ -1,6 +1,7 @@
 import client_cv
 import settingobj
 import pymysql
+import time
 
 setting_obj = settingobj.obj("client.json")
 
@@ -8,7 +9,7 @@ def main():
 
 
 	while True:
-		QRData = client_cv.readUntilQRFound()[0]
+		QRData = client_cv.readUntilQRFound(text="Please present device ID")[0]
 		print(QRData)
 		if QRData["uid"] == "SPECIAL":
 
@@ -54,11 +55,13 @@ def main():
 
 def handleDevice(deviceID, checked):
 
+	studentID = client_cv.readUntilQRFound(text="Please present student ID")[0]["uid"]
+	
+	eventType = -1
+
+	print("Result from student QR: ", studentID)
+
 	if checked == 1: #check out
-
-		studentID = client_cv.readUntilQRFound()[0]["uid"]
-
-		print("Result from student QR: ", studentID)
 
 		conn = pymysql.connect(
 			host = setting_obj.get("ip"), 
@@ -88,6 +91,7 @@ def handleDevice(deviceID, checked):
 					c.execute(sql, (deviceID))
 					conn.commit()
 					print("CHECKED OUT")
+					eventType = 0
 
 		except:
 
@@ -114,6 +118,33 @@ def handleDevice(deviceID, checked):
 				c.execute(sql, (deviceID))
 				conn.commit()
 				print("CHECKED IN")
+				eventType = 1
+
+		except:
+
+			pass; #do some error handling here?
+
+		finally:
+			c.close()
+
+	if eventType != -1:
+
+		conn = pymysql.connect(
+			host = setting_obj.get("ip"), 
+			user = setting_obj.get("username"), 
+			password = setting_obj.get("password"),
+			db = setting_obj.get("db"),
+			charset = "utf8mb4",
+			cursorclass=pymysql.cursors.DictCursor)
+
+		try:
+
+			with conn.cursor() as c:
+				
+				sql = "INSERT INTO Events (UID, DID, Time, CheckIn) VALUES (%s, %s, %s, %s)"
+				c.execute(sql, (deviceID, studentID, int(time.time()), eventType))
+				conn.commit()
+				print("INSERTED EVENT")
 
 		except:
 
