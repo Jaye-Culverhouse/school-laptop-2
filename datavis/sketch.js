@@ -14,7 +14,7 @@ function setup() {
 		
 		let r = createElement("tr");
 		
-		let d = createElement("td", new Date(data[row][0]*1000).toLocaleString("en-GB", dateOptions)); // TIME
+		let d = createElement("td", new Date(data[row][0]*1000).toUTCString()); // TIME
 		r.child(d);
 		
 		d = createElement("td", data[row][1]); // DEVICE NAME
@@ -56,11 +56,32 @@ function setup() {
 		}
 	}
 	
+	
+	
 
+	timeMin = document.getElementById("tMin");
+	
+	let minDT = new Date(data[0][0]*1000).toISOString();
+	minDT = minDT.substring(0, minDT.length-5);
+	timeMin.value = minDT;
+
+	
+	
+	timeMax = document.getElementById("tMax");
+	
+	let maxDT = new Date(data[data.length-1][0]*1000).toISOString();
+	maxDT = maxDT.substring(0, maxDT.length-8);
+	timeMax.value = maxDT;
+	
+	timeMin.min = minDT;
+	timeMin.max = maxDT;
+	timeMax.min = minDT;
+	timeMax.max = maxDT;
+	
 }
 
 function keyPressed(){
-	if(filtered){
+
 		
 		filtered = false;
 		let children = table.child();
@@ -74,7 +95,7 @@ function keyPressed(){
 		}
 		
 		
-	}
+
 }
 
 function filterTableByDevice(){
@@ -111,5 +132,25 @@ function filterTableByName(){
 		
 	}
 		
+}
+
+function filterTableByTime(){
+		
+	let children = table.child();
+	
+	const fMin = (+new Date(timeMin.value)+3600000)/1000;
+	const fMax = (+new Date(timeMax.value)+3600000)/1000;
+	
+	console.log(fMax);
+		
+	for(let i = 0; i < data.length; i++){
+		
+		if(data[i][0] < fMin || data[i][0] > fMax){
+			children[i+2].style.display="none";
+		}else{
+			children[i+2].style.display="";
+		}
+	}
+	
 }
 

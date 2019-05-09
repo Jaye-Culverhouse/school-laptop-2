@@ -6,32 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<title></title>
-	<!-- <link rel="stylesheet" type="text/css" href="pageStyle.css"> -->
-	<style type="text/css">
-		#TABLE_CONT {
-  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-  border-collapse: collapse;
-  width: 75%;
-  table-layout: fixed;
-}
-
-#TABLE_CONT td, #TABLE_CONT th {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-#TABLE_CONT tr:nth-child(even){background-color: #f2f2f2;}
-
-#TABLE_CONT tr:hover {background-color: #ddd;}
-
-#TABLE_CONT th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
-  background-color: #4CAF50;
-  color: white;
-}
-	</style>
+	<link rel="stylesheet" type="text/css" href="pageStyle.css">
 	<script type="text/javascript" src="p5.min.js"></script>
 	<script type="text/javascript" src="p5.dom.min.js"></script>
 	<script type="text/javascript" src="assets/data.js"></script>
@@ -39,6 +14,11 @@
 	
 </head>
 <body>
+	<div>
+		Minimum Time: <input type="datetime-local" id="tMin"><br>
+		Maximum Time: <input type="datetime-local" id="tMax"><br>
+		<input value="Filter table" type="button" id="filter" onclick="filterTableByTime()">
+	</div><br><br><br><br><br><br>
 	<table id="TABLE_CONT">
 		<tr id="heading">
 			<th>Time</th>
@@ -47,6 +27,5 @@
 			<th>Name</th>
 		</tr>
 	</table>
-	
 </body>
 </html>
